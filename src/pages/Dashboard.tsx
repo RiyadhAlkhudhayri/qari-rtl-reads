@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Student, Book, ReadingProgress } from "@/types";
 import { Button } from "@/components/ui/button";
 import { BookCard } from "@/components/BookCard";
@@ -7,7 +7,7 @@ import { BookDetailsModal } from "@/components/BookDetailsModal";
 import { AddBookModal } from "@/components/AddBookModal";
 import { Leaderboard } from "@/components/Leaderboard";
 import { Plus, Library, Trophy, LogOut } from "lucide-react";
-import { mockBooks, mockStudents, mockReadingProgress } from "@/data/mockData";
+import { mockBooks, mockReadingProgress } from "@/data/mockData";
 import { toast } from "sonner";
 
 interface DashboardProps {
@@ -27,7 +27,29 @@ const Dashboard = ({ currentStudent, onLogout }: DashboardProps) => {
     myProgress.some((p) => p.bookId === book.id)
   );
 
-  const handleUpdateProgress = (bookId: string, currentPage: number) => {
+  useEffect(() => {
+    // Fetch user progress from backend on mount
+    const fetchProgress = async () => {
+      try {
+        const res = await fetch(`http://localhost:4000/users/${currentStudent.id}`);
+        if (res.ok) {
+          const user = await res.json();
+          const details = user.progress?.details || {};
+          const loadedProgress = Object.entries(details).map(([bookId, val]: any) => ({
+            bookId,
+            studentId: currentStudent.id,
+            currentPage: val.currentPage,
+            lastUpdated: new Date(val.lastUpdated),
+          }));
+          setMyProgress(loadedProgress);
+        }
+      } catch {}
+    };
+    fetchProgress();
+    // eslint-disable-next-line
+  }, [currentStudent.id]);
+
+  const handleUpdateProgress = async (bookId: string, currentPage: number) => {
     setMyProgress((prev) =>
       prev.map((p) =>
         p.bookId === bookId
@@ -35,6 +57,30 @@ const Dashboard = ({ currentStudent, onLogout }: DashboardProps) => {
           : p
       )
     );
+    // Send progress update to backend
+    try {
+      // Prepare details object for backend
+      const details = myProgress.reduce((acc, p) => {
+        acc[p.bookId] = {
+          currentPage: p.bookId === bookId ? currentPage : p.currentPage,
+          lastUpdated: p.bookId === bookId ? new Date().toISOString() : p.lastUpdated,
+        };
+        return acc;
+      }, {} as Record<string, any>);
+      await fetch(`http://localhost:4000/users/${currentStudent.id}/progress`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          progress: {
+            booksRead: Object.keys(details).length,
+            lastRead: new Date().toISOString(),
+            details,
+          },
+        }),
+      });
+    } catch (e) {
+      // Optionally show error
+    }
   };
 
   const handleAddBook = (book: Book) => {
@@ -102,13 +148,23 @@ const Dashboard = ({ currentStudent, onLogout }: DashboardProps) => {
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <h1 className="text-3xl font-bold">مكتبتي</h1>
-              <Button
-                onClick={() => setShowAddBook(true)}
-                className="gradient-primary gap-2"
-              >
-                <Plus className="w-5 h-5" />
-                إضافة كتاب
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => setShowAddBook(true)}
+                  className="gradient-primary gap-2"
+                >
+                  <Plus className="w-5 h-5" />
+                  إضافة كتاب
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="gap-2"
+                  onClick={() => window.open('https://wa.me/966509124914')}
+                >
+                المساهمة بكتاب               
+                </Button>
+              </div>
             </div>
 
             {myBooks.length === 0 ? (
@@ -145,7 +201,7 @@ const Dashboard = ({ currentStudent, onLogout }: DashboardProps) => {
             )}
           </div>
         ) : (
-          <Leaderboard students={mockStudents} />
+          <Leaderboard />
         )}
       </main>
 

@@ -58,12 +58,12 @@ const Index = ({ onLogin }: IndexProps) => {
 
             <div className="space-y-2">
               <Label htmlFor="universityId" className="text-base">
-                الرقم الجامعي
-              </Label>
+رقم الجوال              
+  </Label>
               <Input
                 id="universityId"
                 type="text"
-                placeholder="مثال: 2023001"
+                placeholder="مثال: +9665XXXXXXXX"
                 value={universityId}
                 onChange={(e) => setUniversityId(e.target.value)}
                 className="h-12 text-base"

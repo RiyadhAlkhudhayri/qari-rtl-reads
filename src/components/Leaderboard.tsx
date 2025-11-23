@@ -1,13 +1,41 @@
+import { useEffect, useState } from "react";
 import { Student } from "@/types";
 import { Card } from "@/components/ui/card";
 import { StudentAvatar } from "./StudentAvatar";
 import { Trophy, Medal, Award } from "lucide-react";
 
-interface LeaderboardProps {
-  students: Student[];
-}
+export const Leaderboard = () => {
+  const [students, setStudents] = useState<Student[]>([]);
 
-export const Leaderboard = ({ students }: LeaderboardProps) => {
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try {
+        const res = await fetch("http://localhost:4000/users");
+        if (res.ok) {
+          const users = await res.json();
+          // Calculate totalPagesRead for each user from progress.details
+          const leaderboard = users.map((u: any) => {
+            let totalPagesRead = 0;
+            if (u.progress && u.progress.details) {
+              for (const bookId in u.progress.details) {
+                totalPagesRead += u.progress.details[bookId].currentPage || 0;
+              }
+            }
+            return {
+              id: u.id,
+              name: u.name,
+              universityId: u.id,
+              avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.name}`,
+              totalPagesRead,
+            };
+          });
+          setStudents(leaderboard);
+        }
+      } catch {}
+    };
+    fetchLeaderboard();
+  }, []);
+
   const sortedStudents = [...students].sort(
     (a, b) => b.totalPagesRead - a.totalPagesRead
   );

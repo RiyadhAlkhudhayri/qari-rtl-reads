@@ -3,105 +3,55 @@ import { Book, Student, ReadingProgress } from "@/types";
 export const mockBooks: Book[] = [
   {
     id: "1",
-    title: "الأيام",
-    author: "طه حسين",
+    title: "حديث الصباح",
+    author: " أدهم شرقاوي",
     totalPages: 280,
-    coverUrl: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop",
-    genre: "سيرة ذاتية"
+    coverUrl: "https://th.bing.com/th/id/OIP.L1tMI-7P27eoH-z_lr_C0QHaK9?w=205&h=304&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3",
+    genre: "ديني "
   },
   {
     id: "2",
-    title: "زقاق المدق",
-    author: "نجيب محفوظ",
+    title: "الداء والدواء",
+    author:" ابن القيم الجوزيه",
     totalPages: 320,
-    coverUrl: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=600&fit=crop",
-    genre: "رواية"
+    coverUrl: "https://th.bing.com/th/id/OIP.eVYys5mkteQXiGKbbbfedgHaKd?w=208&h=294&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3",
+    genre: "ديني "
   },
   {
     id: "3",
-    title: "موسم الهجرة إلى الشمال",
-    author: "الطيب صالح",
+    title: "العادات الذرية",
+    author: "جيمس كلير",
     totalPages: 240,
-    coverUrl: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop",
-    genre: "رواية"
+    coverUrl: "https://th.bing.com/th/id/OIP.ql4QYV6rm3kgO9ME964A_AHaLX?w=121&h=186&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3",
+    genre: "تطوير ذاتي"
   },
   {
     id: "4",
-    title: "رجال في الشمس",
-    author: "غسان كنفاني",
-    totalPages: 180,
-    coverUrl: "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&h=600&fit=crop",
+    title: "سيكولوجية المال ",
+    author: " مورجان هاوسل",
+    totalPages: 232,
+    coverUrl: "https://ketabpedia.com/wp-content/uploads/2025/03/%D8%AA%D8%AD%D9%85%D9%8A%D9%84-%D9%83%D8%AA%D8%A7%D8%A8-%D8%B3%D9%8A%D9%83%D9%88%D9%84%D9%88%D8%AC%D9%8A%D8%A9-%D8%A7%D9%84%D9%85%D8%A7%D9%84-PDF.jpg",
     genre: "رواية"
   },
   {
     id: "5",
-    title: "الخبز الحافي",
-    author: "محمد شكري",
+    title: "100 من عظماء الاسلام",
+    author: "جهاد الترباني" ,
     totalPages: 200,
-    coverUrl: "https://images.unsplash.com/photo-1589998059171-988d887df646?w=400&h=600&fit=crop",
+    coverUrl: "https://th.bing.com/th/id/OIP.8QzKHvQWvxToUpm_VvZRJAHaHa?w=187&h=187&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3",
     genre: "سيرة ذاتية"
   },
   {
     id: "6",
-    title: "ساق البامبو",
-    author: "سعود السنعوسي",
-    totalPages: 360,
-    coverUrl: "https://images.unsplash.com/photo-1524578271613-d550eacf6090?w=400&h=600&fit=crop",
-    genre: "رواية"
+    title: "حقوق الإنسان في الإسلام",
+    author: "مجموعة من المختصين في العلوم الشرعية ",
+    totalPages: 161,
+    coverUrl: "https://media.zid.store/266058de-f9db-4f4a-874d-5bff2b8b1f5f/27cc1c8b-5e5f-430e-86cf-55d122cd9529.jpg",
+    genre: "ديني"
   }
 ];
 
-export const mockStudents: Student[] = [
-  {
-    id: "1",
-    name: "أحمد محمد",
-    universityId: "2023001",
-    totalPagesRead: 1240,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ahmad"
-  },
-  {
-    id: "2",
-    name: "فاطمة علي",
-    universityId: "2023002",
-    totalPagesRead: 1580,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fatima"
-  },
-  {
-    id: "3",
-    name: "محمد خالد",
-    universityId: "2023003",
-    totalPagesRead: 980,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mohammad"
-  },
-  {
-    id: "4",
-    name: "سارة حسن",
-    universityId: "2023004",
-    totalPagesRead: 2100,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sara"
-  },
-  {
-    id: "5",
-    name: "عمر عبدالله",
-    universityId: "2023005",
-    totalPagesRead: 1450,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Omar"
-  },
-  {
-    id: "6",
-    name: "نور الدين",
-    universityId: "2023006",
-    totalPagesRead: 760,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Nour"
-  },
-  {
-    id: "7",
-    name: "ليلى أحمد",
-    universityId: "2023007",
-    totalPagesRead: 1320,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Layla"
-  }
-];
+export const mockStudents: Student[] = [];
 
 export const mockReadingProgress: ReadingProgress[] = [
   { bookId: "1", studentId: "2", currentPage: 180, lastUpdated: new Date() },

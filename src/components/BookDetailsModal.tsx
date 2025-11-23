@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Book, ReadingProgress, Student } from "@/types";
 import {
   Dialog,
@@ -31,20 +31,44 @@ export const BookDetailsModal = ({
   onUpdateProgress,
 }: BookDetailsModalProps) => {
   const [currentPage, setCurrentPage] = useState(progress?.currentPage || 0);
+  const [studentsReadingThisBook, setStudentsReadingThisBook] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!book || !progress) return;
+    // Fetch all users from backend and filter those reading this book
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch("http://localhost:4000/users");
+        if (res.ok) {
+          const users = await res.json();
+          const others = users
+            .filter((u: any) => u.id !== progress.studentId && u.progress?.details?.[book.id])
+            .map((u: any) => ({
+              student: {
+                id: u.id,
+                name: u.name,
+                universityId: u.id,
+                avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.name}`,
+              },
+              progress: {
+                bookId: book.id,
+                studentId: u.id,
+                currentPage: u.progress.details[book.id].currentPage,
+                lastUpdated: u.progress.details[book.id].lastUpdated,
+              },
+            }));
+          setStudentsReadingThisBook(others);
+        }
+      } catch {}
+    };
+    fetchUsers();
+  }, [book, progress]);
 
   if (!book) return null;
 
   const progressPercentage = progress
     ? Math.round((progress.currentPage / book.totalPages) * 100)
     : 0;
-
-  const studentsReadingThisBook = mockReadingProgress
-    .filter((p) => p.bookId === book.id && p.studentId !== progress?.studentId)
-    .map((p) => ({
-      student: mockStudents.find((s) => s.id === p.studentId)!,
-      progress: p,
-    }))
-    .filter((item) => item.student);
 
   const handleUpdateProgress = () => {
     if (currentPage < 0 || currentPage > book.totalPages) {
@@ -55,8 +79,14 @@ export const BookDetailsModal = ({
     toast.success("تم تحديث التقدم بنجاح!");
   };
 
-  const handleContact = (studentName: string) => {
-    toast.info(`التواصل مع ${studentName} قريباً!`);
+  const handleContact = (studentId: string) => {
+    // Add +966 if not present for WhatsApp
+    let phone = studentId.replace(/[^\d]/g, "");
+    if (!phone.startsWith("966")) {
+      if (phone.startsWith("0")) phone = phone.substring(1);
+      phone = "966" + phone;
+    }
+    window.open(`https://wa.me/${phone}`);
   };
 
   return (
@@ -158,7 +188,7 @@ export const BookDetailsModal = ({
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleContact(student.name)}
+                        onClick={() => handleContact(student.id)}
                         className="gap-2"
                       >
                         <MessageCircle className="w-4 h-4" />
