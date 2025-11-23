@@ -31,7 +31,7 @@ const App = () => {
     }
 
     // 2) User not found → create/login user
-    response = await fetch("https://raqeem-34ac.onrender.com/login", {
+    response = await fetch("https://raqeem-34ac.onrender.com/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, universityId })
