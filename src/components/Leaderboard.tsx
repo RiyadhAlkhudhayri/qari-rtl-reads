@@ -10,7 +10,7 @@ export const Leaderboard = () => {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
-        const res = await fetch("http://localhost:4000/users");
+        const res = await fetch("https://raqeem-34ac.onrender.com/users");
         if (res.ok) {
           const users = await res.json();
           // Calculate totalPagesRead for each user from progress.details
@@ -69,7 +69,7 @@ export const Leaderboard = () => {
   return (
     <div className="space-y-4">
       <h2 className="text-3xl font-bold text-center mb-6">
-        لوحة المتصدرين
+        لوحة المتصدرين 
       </h2>
 
       <div className="space-y-3">
