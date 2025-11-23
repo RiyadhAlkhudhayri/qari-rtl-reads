@@ -31,7 +31,7 @@ const Dashboard = ({ currentStudent, onLogout }: DashboardProps) => {
     // Fetch user progress from backend on mount
     const fetchProgress = async () => {
       try {
-        const res = await fetch(`http://localhost:4000/users/${currentStudent.id}`);
+        const res = await fetch(`https://raqeem-34ac.onrender.com/users/${currentStudent.id}`);
         if (res.ok) {
           const user = await res.json();
           const details = user.progress?.details || {};
