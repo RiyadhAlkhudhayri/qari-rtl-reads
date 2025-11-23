@@ -13,42 +13,46 @@ const App = () => {
   const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
 
   const handleLogin = async (name: string, universityId: string) => {
-    try {
-      // Try to get user by ID first
-      let response = await fetch(`https://raqeem-34ac.onrender.com`);
-      if (response.ok) {
-        // User exists, use their data
-        const backendUser = await response.json();
-        const newStudent: Student = {
-          id: backendUser.id,
-          name: backendUser.name,
-          universityId: backendUser.id,
-          totalPagesRead: backendUser.progress?.booksRead || 0,
-          avatar: "/default-avatar.png",
-        };
-        setCurrentStudent(newStudent);
-        return;
-      }
-      // If not found, create new user
-      response = await fetch("https://raqeem-34ac.onrender.com/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, universityId }),
-      });
-      if (!response.ok) throw new Error("Failed to create user");
+  try {
+    // 1) Try to get the user by ID
+    let response = await fetch(`https://raqeem-34ac.onrender.com/users/${universityId}`);
+
+    if (response.ok) {
       const backendUser = await response.json();
-      const newStudent: Student = {
+      const student: Student = {
         id: backendUser.id,
         name: backendUser.name,
         universityId: backendUser.id,
         totalPagesRead: backendUser.progress?.booksRead || 0,
-        avatar: "/default-avatar.png",
+        avatar: "/default-avatar.png"
       };
-      setCurrentStudent(newStudent);
-    } catch (error) {
-      alert("Login failed: " + (error as Error).message);
+      setCurrentStudent(student);
+      return;
     }
-  };
+
+    // 2) User not found → create/login user
+    response = await fetch("https://raqeem-34ac.onrender.com/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, universityId })
+    });
+
+    if (!response.ok) throw new Error("Failed to login or create user");
+
+    const backendUser = await response.json();
+    const student: Student = {
+      id: backendUser.id,
+      name: backendUser.name,
+      universityId: backendUser.id,
+      totalPagesRead: backendUser.progress?.booksRead || 0,
+      avatar: "/default-avatar.png"
+    };
+
+    setCurrentStudent(student);
+  } catch (error) {
+    alert("Login failed: " + (error as Error).message);
+  }
+};
 
   const handleLogout = () => {
     setCurrentStudent(null);
