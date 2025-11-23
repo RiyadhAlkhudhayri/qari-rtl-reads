@@ -67,7 +67,7 @@ const Dashboard = ({ currentStudent, onLogout }: DashboardProps) => {
         };
         return acc;
       }, {} as Record<string, any>);
-      await fetch(`http://localhost:4000/users/${currentStudent.id}/progress`, {
+      await fetch(`https://raqeem-34ac.onrender.com/users/${currentStudent.id}/progress`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
