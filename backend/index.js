@@ -55,6 +55,13 @@ app.get('/users/:id', async (req, res) => {
   res.json(user);
 });
 
+// Get all books
+app.get('/books', async (req, res) => {
+  await db.read();
+  res.json(db.data.books || []);
+});
+
+
 // Update user progress
 app.put('/users/:id/progress', async (req, res) => {
   const id = req.params.id;
@@ -67,6 +74,7 @@ app.put('/users/:id/progress', async (req, res) => {
   await db.write();
   res.json(user);
 });
+
 
 // Update user (name)
 app.put('/users/:id', async (req, res) => {
@@ -92,4 +100,5 @@ app.delete('/users/:id', async (req, res) => {
 });
 
 const port = process.env.PORT || 4000;
-app.listen(port, () => console.log(`Backend running on http://localhost:${port}`));
+app.listen(port, () => console.log(`Backend running on port ${port}`));
+
