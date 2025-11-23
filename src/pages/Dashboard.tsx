@@ -50,38 +50,40 @@ const Dashboard = ({ currentStudent, onLogout }: DashboardProps) => {
   }, [currentStudent.id]);
 
   const handleUpdateProgress = async (bookId: string, currentPage: number) => {
-    setMyProgress((prev) =>
-      prev.map((p) =>
-        p.bookId === bookId
-          ? { ...p, currentPage, lastUpdated: new Date() }
-          : p
-      )
-    );
-    // Send progress update to backend
-    try {
-      // Prepare details object for backend
-      const details = myProgress.reduce((acc, p) => {
-        acc[p.bookId] = {
-          currentPage: p.bookId === bookId ? currentPage : p.currentPage,
-          lastUpdated: p.bookId === bookId ? new Date().toISOString() : p.lastUpdated,
-        };
-        return acc;
-      }, {} as Record<string, any>);
-      await fetch(`https://raqeem-34ac.onrender.com/users/${currentStudent.id}/progress`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          progress: {
-            booksRead: Object.keys(details).length,
-            lastRead: new Date().toISOString(),
-            details,
-          },
-        }),
-      });
-    } catch (e) {
-      // Optionally show error
-    }
-  };
+  // 1. Update local state immediately
+  const updatedProgress = myProgress.map(p =>
+    p.bookId === bookId
+      ? { ...p, currentPage, lastUpdated: new Date() }
+      : p
+  );
+
+  setMyProgress(updatedProgress);
+
+  // 2. Build details using the UPDATED version
+  const details = updatedProgress.reduce((acc, p) => {
+    acc[p.bookId] = {
+      currentPage: p.currentPage,
+      lastUpdated: p.lastUpdated,
+    };
+    return acc;
+  }, {} as Record<string, any>);
+
+  // 3. Send to backend
+  try {
+    await fetch(`https://raqeem-34ac.onrender.com/users/${currentStudent.id}/progress`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        progress: {
+          booksRead: updatedProgress.length,
+          lastRead: new Date().toISOString(),
+          details,
+        },
+      }),
+    });
+  } catch {}
+};
+
 
   const handleAddBook = (book: Book) => {
     const newProgress: ReadingProgress = {
