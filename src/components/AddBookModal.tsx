@@ -14,43 +14,48 @@ interface AddBookModalProps {
   onClose: () => void;
   onAddBook: (book: Book) => void;
   currentBookIds: string[];
+  currentStudent: { id: string; name: string } | null;   // <-- keep this
 }
-
-const handleAddBook = async (book: Book) => {
-  if (!currentStudent) return;
-
-  try {
-    const response = await fetch(
-      `https://raqeem-34ac.onrender.com/users/${currentStudent.id}/books`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(book),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to add book");
-    }
-
-    const updatedUser = await response.json();
-
-    // optionally update your local state
-    // setCurrentStudent(updatedUser);
-
-    alert("Book added successfully!");
-  } catch (err) {
-    console.error(err);
-    alert("Failed to add book.");
-  }
-};
 
 export const AddBookModal = ({
   open,
   onClose,
   onAddBook,
   currentBookIds,
+  currentStudent,
 }: AddBookModalProps) => {
+
+  const handleAddBook = async (book: Book) => {
+    if (!currentStudent) {
+      alert("No student selected!");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `https://raqeem-34ac.onrender.com/users/${currentStudent.id}/books`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ bookId: book.id }), // <-- correct payload
+        }
+      );
+
+      if (!response.ok) {
+        const err = await response.json();
+        alert("Error: " + err.error);
+        return;
+      }
+
+      onAddBook(book);  // update UI locally
+      onClose();        // close modal
+
+    } catch (error) {
+      console.error(error);
+      alert("Failed to add book.");
+    }
+  };
+
   const availableBooks = mockBooks.filter(
     (book) => !currentBookIds.includes(book.id)
   );
@@ -83,9 +88,7 @@ export const AddBookModal = ({
 
                 <div className="flex-1 space-y-2">
                   <div>
-                    <h3 className="font-semibold line-clamp-1">
-                      {book.title}
-                    </h3>
+                    <h3 className="font-semibold line-clamp-1">{book.title}</h3>
                     <p className="text-sm text-muted-foreground">
                       {book.author}
                     </p>
@@ -96,10 +99,7 @@ export const AddBookModal = ({
                   </p>
 
                   <Button
-                    onClick={() => {
-                      handleAddBook(book); // send book to backend
-                      onClose(); // close modal
-                    }}
+                    onClick={() => handleAddBook(book)}  // <-- use backend
                     size="sm"
                     className="w-full gap-2"
                   >
