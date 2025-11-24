@@ -25,36 +25,37 @@ export const AddBookModal = ({
   currentStudent,
 }: AddBookModalProps) => {
 
-  const handleAddBook = async (book: Book) => {
-    if (!currentStudent) {
-      alert("No student selected!");
+ const handleAddBook = async (book: Book) => {
+  if (!currentStudent) {
+    alert("No student selected!");
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `https://raqeem-34ac.onrender.com/users/${currentStudent.id}/books`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(book),  // send full book object
+      }
+    );
+
+    if (!response.ok) {
+      const err = await response.json();
+      alert("Error: " + err.error);
       return;
     }
 
-    try {
-      const response = await fetch(
-        `https://raqeem-34ac.onrender.com/users/${currentStudent.id}/books`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ bookId: book.id }), // <-- correct payload
-        }
-      );
+    onAddBook(book);  // update local UI
+    onClose();        // close modal
 
-      if (!response.ok) {
-        const err = await response.json();
-        alert("Error: " + err.error);
-        return;
-      }
+  } catch (error) {
+    console.error(error);
+    alert("Failed to add book.");
+  }
+};
 
-      onAddBook(book);  // update UI locally
-      onClose();        // close modal
-
-    } catch (error) {
-      console.error(error);
-      alert("Failed to add book.");
-    }
-  };
 
   const availableBooks = mockBooks.filter(
     (book) => !currentBookIds.includes(book.id)
