@@ -32,7 +32,7 @@ const Index = ({ onLogin }: IndexProps) => {
             <BookOpen className="w-10 h-10 text-white" />
           </div>
           <div>
-            <h1 className="text-4xl font-bold text-foreground mb-2">قارئ</h1>
+            <h1 className="text-4xl font-bold text-foreground mb-2">رقيم</h1>
             <p className="text-muted-foreground text-lg">
               تتبع رحلتك في عالم القراءة
             </p>
