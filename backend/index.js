@@ -76,6 +76,29 @@ app.put('/users/:id/progress', async (req, res) => {
 });
 
 
+// Add a book to a user's progress/details
+app.post('/users/:id/books', async (req, res) => {
+  const id = req.params.id;
+  const book = req.body; // expect { id, title, totalPages, author, coverUrl, genre }
+
+  if (!book || !book.id) return res.status(400).json({ error: 'book id is required' });
+
+  await db.read();
+  const user = db.data.users.find(u => u.id === id);
+  if (!user) return res.status(404).json({ error: 'user not found' });
+
+  // Add book to progress.details, if not already added
+  if (!user.progress.details[book.id]) {
+    user.progress.details[book.id] = book;
+    await db.write();
+  } else {
+    return res.status(409).json({ error: 'Book already added' });
+  }
+
+  res.json(user);
+});
+
+
 // Update user (name)
 app.put('/users/:id', async (req, res) => {
   const id = req.params.id;
