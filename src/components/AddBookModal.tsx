@@ -16,6 +16,34 @@ interface AddBookModalProps {
   currentBookIds: string[];
 }
 
+const handleAddBook = async (book: Book) => {
+  if (!currentStudent) return;
+
+  try {
+    const response = await fetch(
+      `https://raqeem-34ac.onrender.com/users/${currentStudent.id}/books`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(book),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to add book");
+    }
+
+    const updatedUser = await response.json();
+    // optionally update your local state
+    // setCurrentStudent(updatedUser);
+    alert("Book added successfully!");
+  } catch (err) {
+    console.error(err);
+    alert("Failed to add book.");
+  }
+};
+
+
 export const AddBookModal = ({
   open,
   onClose,
@@ -58,16 +86,17 @@ export const AddBookModal = ({
                     {book.totalPages} صفحة • {book.genre}
                   </p>
                   <Button
-                    onClick={() => {
-                      onAddBook(book);
-                      onClose();
-                    }}
-                    size="sm"
-                    className="w-full gap-2"
-                  >
-                    <Plus className="w-4 h-4" />
-                    إضافة للمكتبة
-                  </Button>
+                      onClick={() => {
+                        handleAddBook(book); // send book to backend
+                        onClose();           // close modal
+                      }}
+                      size="sm"
+                      className="w-full gap-2"
+                    >
+                      <Plus className="w-4 h-4" />
+                      إضافة للمكتبة
+                    </Button>
+
                 </div>
               </div>
             ))}
