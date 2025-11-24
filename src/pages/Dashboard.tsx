@@ -221,6 +221,7 @@ const Dashboard = ({ currentStudent, onLogout }: DashboardProps) => {
         onClose={() => setShowAddBook(false)}
         onAddBook={handleAddBook}
         currentBookIds={myBooks.map((b) => b.id)}
+        currentStudent={currentStudent}
       />
     </div>
   );
